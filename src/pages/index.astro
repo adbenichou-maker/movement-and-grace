@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { routes } from '../i18n/ui';
+---
+
+<BaseLayout
+  page="home"
+  title="Movement & Grace · Yoga, séminaires et team building bien-être"
+  description="Yoga et ateliers bien-être pour les entreprises et les particuliers : séminaires, team building et cours individuels à Mons, en Wallonie, à Bruxelles et à Paris."
+>
+  <section class="hero container">
+    <div class="hero__inner">
+      <span class="eyebrow" data-reveal>Yoga · Ateliers · Événements</span>
+
+      <h1 data-reveal style="--reveal-delay: 120ms">
+        Se sentir bien,<br /><em>et mieux travailler ensemble.</em>
+      </h1>
+
+      <hr class="divider center" data-reveal style="--reveal-delay: 240ms" />
+
+      <!-- TODO : remplacer par le texte de présentation définitif. -->
+      <div class="hero__text" data-reveal style="--reveal-delay: 320ms">
+        <span class="placeholder-note">Texte provisoire</span>
+        <p class="lead center">
+          Je m'appelle Mathilde. J'accompagne les équipes et les personnes qui souhaitent ralentir,
+          retrouver leur corps et mieux s'écouter. Entre le yoga, la parole et le mouvement, je crée
+          des moments simples et doux pour se reconnecter à soi et aux autres.
+        </p>
+        <p class="lead center">
+          En entreprise, à Mons, à Bruxelles ou à Paris, en petit groupe ou en individuel :
+          chacun avance à son rythme, dans un cadre sûr et bienveillant.
+        </p>
+      </div>
+
+      <div class="actions hero__actions" data-reveal style="--reveal-delay: 440ms">
+        <a class="btn btn--peach" href={routes.fr.seminars}>
+          Séminaire &amp; Team Building <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="btn" href={routes.fr.lessons}>
+          Cours individuels <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    min-height: calc(100svh - 6rem);
+    display: grid;
+    place-items: center;
+    padding-block: clamp(2rem, 1rem + 4vh, 5rem);
+    text-align: center;
+  }
+
+  .hero__inner {
+    max-width: 50rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 1.7rem + 3vw, 4.2rem);
+    margin-bottom: 0;
+  }
+
+  .hero .divider {
+    margin-block: 1.75rem;
+  }
+
+  .hero .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .hero__text .lead {
+    margin-inline: auto;
+  }
+
+  .hero__actions {
+    justify-content: center;
+    margin-top: 2.75rem;
+  }
+
+  @media (max-width: 520px) {
+    .hero__actions { flex-direction: column; }
+    .hero__actions .btn { width: 100%; }
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+// Pied de page : contact toujours à portée de main (email, téléphone, Instagram, adresse).
+import { SITE } from '../config/site';
+import { NAV_ORDER, routes, t, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const year = new Date().getFullYear();
+const tel = SITE.phone.replace(/[^+\d]/g, '');
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <span class="footer__name">Movement &amp; Grace</span>
+      <span class="footer__sub">Well-being</span>
+      <p class="footer__zones">{t(locale, 'footer.zones')}</p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__title">{t(locale, 'footer.contact')}</h2>
+      <ul>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><a href={`tel:${tel}`}>{SITE.phone}</a></li>
+        <li><a href={SITE.instagram} rel="noopener" target="_blank">Instagram {SITE.instagramHandle}</a></li>
+        <li>{SITE.address.city}, {SITE.address.region}</li>
+      </ul>
+    </div>
+
+    <nav class="footer__col" aria-label="Plan du site">
+      <ul>
+        {NAV_ORDER.map((key) => <li><a href={routes[locale][key]}>{t(locale, `nav.${key}`)}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container footer__legal">
+    <span>© {year} {SITE.name} · {SITE.founder}. {t(locale, 'footer.rights')}</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: clamp(3rem, 2rem + 5vw, 7rem);
+    background: var(--plum);
+    color: rgb(246 239 229 / 0.78);
+    font-size: 0.9rem;
+  }
+
+  .footer__inner {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(3rem, 2.5rem + 3vw, 5rem);
+  }
+
+  @media (min-width: 760px) {
+    .footer__inner { grid-template-columns: 1.4fr 1fr 1fr; }
+  }
+
+  .footer__name {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--cream);
+  }
+
+  .footer__sub {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+
+  .footer__zones { margin-top: 1.5rem; }
+
+  .footer__title {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--peach);
+    margin-bottom: 0.8rem;
+  }
+
+  .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .footer a { text-decoration: none; }
+  .footer a:hover { color: var(--peach); }
+
+  .footer__legal {
+    padding-block: 1.5rem 2rem;
+    border-top: 1px solid rgb(246 239 229 / 0.1);
+    font-size: 0.75rem;
+    color: rgb(246 239 229 / 0.5);
+  }
+</style>

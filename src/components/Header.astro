@@ -1,0 +1,49 @@
+---
+import { routes, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<header class="header">
+  <a class="wordmark" href={routes[locale].home} aria-label="Movement & Grace — Well-being">
+    <span class="wordmark__name">Movement &amp; Grace</span>
+    <span class="wordmark__sub">Well-being</span>
+  </a>
+</header>
+
+<style>
+  .header {
+    padding: 1.75rem var(--gutter) 0;
+    /* laisse la place au bouton de menu flottant sur mobile */
+    padding-right: calc(var(--gutter) + 56px);
+  }
+
+  @media (min-width: 900px) {
+    .header { padding-right: var(--gutter); }
+  }
+
+  .wordmark {
+    display: inline-grid;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--plum);
+  }
+
+  .wordmark__name {
+    font-size: clamp(0.68rem, 0.62rem + 0.25vw, 0.8rem);
+    font-weight: 400;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+  }
+
+  .wordmark__sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+</style>

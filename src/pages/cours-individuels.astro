@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaBand from '../components/CtaBand.astro';
+// import Video from '../components/Video.astro'; // à décommenter quand les vidéos arrivent
+import { SITE } from '../config/site';
+
+// TODO : prochaines dates (Slow Sunday, ateliers…). Laisser vide pour afficher « bientôt ».
+const prochainesDates: { date: string; title: string; place: string }[] = [];
+---
+
+<BaseLayout
+  page="lessons"
+  title="Cours de yoga individuels et en petit groupe à Mons"
+  description="Cours de yoga privés, en individuel ou en tout petit groupe, avec Mathilde Goutorbe, professeure certifiée à Mons. Slow Sunday, ateliers et vidéos à suivre chez soi."
+>
+  <section class="page-intro container">
+    <span class="eyebrow" data-reveal>Pour tout le monde</span>
+    <h1 data-reveal style="--reveal-delay: 100ms">Cours <em>individuels</em></h1>
+    <p class="lead" data-reveal style="--reveal-delay: 200ms">
+      Du yoga seul avec moi ou en tout petit groupe, pour retrouver la confiance dans son corps,
+      à son rythme. La force naît souvent de la douceur.
+    </p>
+  </section>
+
+  <!-- Cours privés -->
+  <section class="section container" aria-labelledby="cours-prives">
+    <div class="split">
+      <div class="photo-placeholder" data-reveal aria-hidden="true">Photo à venir</div>
+      <div data-reveal style="--reveal-delay: 150ms">
+        <span class="eyebrow">Cours privés</span>
+        <h2 id="cours-prives">Un cours <em>pensé pour vous</em></h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Cours individuel</h3>
+            <p>Une séance rien que pour vous, adaptée à votre corps, votre énergie et vos envies du moment.</p>
+            <!-- TODO : prix -->
+            <p class="price">Tarif à venir</p>
+          </div>
+          <div class="card">
+            <h3>En groupe restreint</h3>
+            <p>Entre amis, en famille ou entre collègues : quelques personnes seulement, pour garder l’attention de chacun.</p>
+            <p class="price">Tarif à venir</p>
+          </div>
+        </div>
+        <div class="actions" style="margin-top: 2rem">
+          <a class="btn btn--peach" href={SITE.bookingUrl}>Réserver <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events & workshops -->
+  <section class="section container" aria-labelledby="evenements">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Events &amp; workshops</span>
+      <h2 id="evenements">Des moments <em>pour ralentir</em></h2>
+    </div>
+
+    <div class="grid grid--3">
+      <article class="card" data-reveal>
+        <span class="num">1</span>
+        <h3>Le Slow Sunday</h3>
+        <p>Un dimanche matin pour ralentir, respirer et commencer la semaine en douceur.</p>
+      </article>
+      <article class="card" data-reveal style="--reveal-delay: 120ms">
+        <span class="num">2</span>
+        <h3>Les fêtes privées</h3>
+        <p>Un anniversaire, un enterrement de vie de jeune fille, une réunion de famille : un moment bien-être à partager.</p>
+      </article>
+      <article class="card card--plum" data-reveal style="--reveal-delay: 240ms">
+        <span class="num">3</span>
+        <h3>Les prochaines dates</h3>
+        {
+          prochainesDates.length > 0 ? (
+            <ul class="list">
+              {prochainesDates.map((d) => (
+                <li>
+                  <strong>{d.date}</strong> · {d.title} · {d.place}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Les prochaines dates arrivent bientôt.</p>
+          )
+        }
+      </article>
+    </div>
+
+    <div class="actions" style="margin-top: 2.5rem" data-reveal>
+      <a class="btn" href={SITE.bookingUrl}>Réserver <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- En ligne -->
+  <section class="section container" aria-labelledby="en-ligne">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">En ligne</span>
+      <h2 id="en-ligne">À regarder <em>chez soi</em></h2>
+      <p class="lead">Quelques séances de yoga et des vidéos « gratitude » à suivre à la maison.</p>
+    </div>
+
+    <div class="grid grid--2">
+      <!--
+        Exemple quand les vidéos seront prêtes :
+        <Video youtube="ID_YOUTUBE" title="Séance de yoga du matin" />
+        <Video src="/videos/gratitude.mp4" poster="/images/gratitude.jpg" title="Gratitude" />
+      -->
+      <div class="video-soon" data-reveal><span>Vidéos bientôt disponibles</span></div>
+      <div class="video-soon" data-reveal style="--reveal-delay: 120ms"><span>Vidéos bientôt disponibles</span></div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Envie d’un premier <em>cours</em> ?"
+    text="Écrivez-moi pour trouver ensemble le format et le moment qui vous conviennent."
+    href={SITE.bookingUrl}
+    label="Réserver"
+  />
+</BaseLayout>
+
+<style>
+  .price {
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--peach-deep);
+  }
+
+  .video-soon {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(55% 60% at 30% 40%, rgb(229 182 160 / 0.55), transparent 70%),
+      radial-gradient(50% 50% at 75% 70%, rgb(143 174 150 / 0.3), transparent 70%),
+      var(--cream-deep);
+    color: var(--plum-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,107 @@
+---
+// Texte fourni dans le briefing (page « À propos »).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { routes } from '../i18n/ui';
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Mathilde Goutorbe',
+  jobTitle: 'Professeure de yoga certifiée',
+  worksFor: { '@type': 'Organization', name: 'Movement & Grace' },
+  homeLocation: { '@type': 'Place', name: 'Mons, Belgique' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Sorbonne Université' },
+};
+---
+
+<BaseLayout
+  page="about"
+  title="Mathilde Goutorbe · Professeure de yoga certifiée à Mons"
+  description="Danse classique, diplomatie, missions humanitaires, accompagnement d’équipes : découvrez le parcours de Mathilde Goutorbe, fondatrice de Movement & Grace."
+  jsonLd={person}
+>
+  <section class="page-intro container">
+    <span class="eyebrow" data-reveal>À propos de moi</span>
+    <h1 data-reveal style="--reveal-delay: 100ms">
+      M pour Movement.<br />G pour Grace.<br /><em>MG pour Mathilde Goutorbe.</em>
+    </h1>
+  </section>
+
+  <section class="section container">
+    <div class="split">
+      <div class="sticky" data-reveal>
+        <!-- TODO : vraie photo de Mathilde (lumière naturelle, tons chauds). -->
+        <div class="photo-placeholder" aria-hidden="true">Photo de Mathilde</div>
+      </div>
+
+      <div class="prose about" data-reveal style="--reveal-delay: 150ms">
+        <p>
+          Parisienne d’origine, j’ai grandi au rythme de la danse classique, en quête d’un geste juste
+          et léger. C’est de là que naît le « Movement » : la conviction que le corps est notre premier allié.
+        </p>
+        <p>
+          Le yoga est entré dans ma vie à 17 ans. Trois ans plus tard, une chute de cheval m’a invitée
+          à ralentir et à renouer, pas à pas, avec la confiance en moi-même et en mon corps. J’y ai
+          appris que la force naît souvent de la douceur. C’est cette sécurité intérieure que je
+          transmets aujourd’hui dans mes cours, en groupe restreint ou en individuel.
+        </p>
+        <p>
+          Curieuse du monde et de l’âme humaine, j’ai étudié l’histoire et les relations
+          internationales à la Sorbonne, puis découvert l’exigence des ministères et des ambassades.
+          J’y ai compris ce que vivent celles et ceux qui portent de lourdes responsabilités, et
+          combien chaque mot compte.
+        </p>
+        <p>
+          Mes pas m’ont menée dans les montagnes d’Arménie pour deux missions humanitaires, puis à
+          Belgrade. De mes racines à l’Est, je garde un attachement profond aux Balkans, une
+          sensibilité pour les cultures orientales, l’art et la créativité, et le goût de l’écoute de l’autre.
+        </p>
+        <p>
+          Depuis quatre ans, je vis à Mons, entre Paris et Bruxelles, par amour pour une ville à
+          taille humaine et pour le slow living. À Bruxelles, au cœur de projets internationaux dans
+          la pharma, j’ai mesuré l’intensité de la performance. Par passion pour la psychologie
+          humaine et la collaboration entre les individus, j’y ai accompagné de jeunes talents et des
+          équipes, à travers des ateliers et des séminaires. Ils sont devenus le cœur de mon offre
+          pour les entreprises.
+        </p>
+        <p>
+          Aujourd’hui professeure de yoga certifiée, je réunis dans Movement &amp; Grace tout ce qui
+          m’a façonnée : le corps, l’écoute, l’ouverture au monde et une soif de savoir intacte. Des
+          cours pour se retrouver, des ateliers pour mieux travailler ensemble, des événements pour
+          vivre des moments qui rassemblent.
+        </p>
+
+        <div class="card belief">
+          <p>
+            Je crois qu’on peut vouloir faire beaucoup sans oublier d’être humain. Prendre soin de soi
+            n’est pas un acte égoïste : c’est souvent la condition pour prendre soin du monde qui nous entoure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight container">
+    <p class="quote center" data-reveal>Vivre des instants qui font du bien.</p>
+  </section>
+
+  <CtaBand
+    title="Faisons <em>connaissance</em>"
+    text="Pour un cours, un atelier ou un événement, je serai ravie d’échanger avec vous."
+    href={routes.fr.contact}
+    label="Me contacter"
+  />
+</BaseLayout>
+
+<style>
+  .about p { color: var(--plum); }
+  .belief { margin-top: 2.5rem; }
+  .belief p {
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.5;
+  }
+  .quote.center { text-align: center; }
+</style>

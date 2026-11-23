@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { routes } from '../i18n/ui';
+---
+
+<BaseLayout title="Page introuvable · Movement & Grace" description="Cette page n’existe pas ou plus." noindex>
+  <section class="page-intro container center">
+    <span class="eyebrow">404</span>
+    <h1 class="center">On s’est un peu <em>perdu</em></h1>
+    <p class="lead center">Cette page n’existe pas ou plus. Respirons, et revenons à l’essentiel.</p>
+    <div class="actions" style="justify-content: center; margin-top: 2rem">
+      <a class="btn" href={routes.fr.home}>Retour à l’accueil</a>
+    </div>
+  </section>
+</BaseLayout>

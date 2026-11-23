@@ -1,0 +1,134 @@
+---
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/400-italic.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource-variable/montserrat/wght.css';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import SideNav from '../components/SideNav.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../config/site';
+import { LIVE_LOCALES, routes, type Locale, type PageKey } from '../i18n/ui';
+import { absoluteUrl, IS_PREVIEW, withBase } from '../lib/url';
+
+interface Props {
+  /** Titre affiché dans Google et l'onglet (≈ 50-60 caractères). */
+  title: string;
+  /** Description affichée sous le titre dans Google (≈ 140-160 caractères). */
+  description: string;
+  locale?: Locale;
+  page?: PageKey;
+  /** Image de partage (réseaux sociaux), chemin depuis /public. */
+  ogImage?: string;
+  /** Données structurées spécifiques à la page (en plus de celles du site). */
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const { title, description, locale = 'fr', page, ogImage, jsonLd, noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const homeUrl = absoluteUrl('/');
+const robots = noindex || IS_PREVIEW ? 'noindex, nofollow' : undefined;
+const ogLocale = locale === 'fr' ? 'fr_BE' : 'en_GB';
+
+// Versions linguistiques de la page (hreflang) — actif dès que l'anglais est publié.
+const alternates =
+  page && LIVE_LOCALES.length > 1
+    ? LIVE_LOCALES.map((l) => ({ lang: l, href: new URL(routes[l][page], Astro.site).href }))
+    : [];
+
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${homeUrl}#business`,
+  name: SITE.name,
+  description:
+    'Yoga, ateliers et séminaires bien-être pour les entreprises et les particuliers : team building, cohésion d’équipe, cours de yoga individuels et en petit groupe.',
+  url: homeUrl,
+  email: SITE.email,
+  telephone: SITE.phone,
+  founder: { '@type': 'Person', name: SITE.founder, jobTitle: 'Professeure de yoga certifiée' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: SITE.address.city,
+    postalCode: SITE.address.postalCode,
+    addressRegion: SITE.address.region,
+    addressCountry: SITE.address.country,
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Mons' },
+    { '@type': 'AdministrativeArea', name: 'Wallonie' },
+    { '@type': 'City', name: 'Bruxelles' },
+    { '@type': 'City', name: 'Paris' },
+  ],
+  knowsLanguage: ['fr', 'en'],
+  sameAs: [SITE.instagram],
+};
+---
+
+<!doctype html>
+<html lang={locale === 'fr' ? 'fr-BE' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {robots && <meta name="robots" content={robots} />}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={alternates[0].href} />}
+
+    <meta name="theme-color" content="#f6efe5" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={absoluteUrl(ogImage)} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(business)} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <div class="page">
+      <Header locale={locale} />
+      <main id="contenu">
+        <slot />
+      </main>
+      <Footer locale={locale} />
+    </div>
+    <SideNav locale={locale} current={page} />
+
+    <script>
+      // Apparition lente des blocs marqués data-reveal quand ils entrent à l'écran.
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

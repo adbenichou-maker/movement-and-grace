@@ -1,40 +1,62 @@
 ---
-// Pied de page : contact toujours à portée de main (email, téléphone, Instagram, adresse).
+// Pied de page en trois colonnes : Menu · Présence géographique · Me contacter.
 import { SITE } from '../config/site';
 import { NAV_ORDER, routes, t, type Locale } from '../i18n/ui';
+import ContactIcon from './ContactIcon.astro';
 
 interface Props {
   locale: Locale;
+  /** Collé au contenu, sans grand espace au-dessus (page d'accueil). */
+  flush?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, flush = false } = Astro.props;
 const year = new Date().getFullYear();
 const tel = SITE.phone.replace(/[^+\d]/g, '');
 ---
 
-<footer class="footer">
+<footer class:list={['footer', { 'footer--flush': flush }]}>
   <div class="container footer__inner">
-    <div class="footer__brand">
-      <span class="footer__name">Movement &amp; Grace</span>
-      <span class="footer__sub">Well-being</span>
-      <p class="footer__zones">{t(locale, 'footer.zones')}</p>
-    </div>
-
-    <div class="footer__col">
-      <h2 class="footer__title">{t(locale, 'footer.contact')}</h2>
-      <ul>
-        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
-        <li><a href={`tel:${tel}`}>{SITE.phone}</a></li>
-        <li><a href={SITE.instagram} rel="noopener" target="_blank">Instagram {SITE.instagramHandle}</a></li>
-        <li>{SITE.address.city}, {SITE.address.region}</li>
-      </ul>
-    </div>
-
-    <nav class="footer__col" aria-label="Plan du site">
+    <nav class="footer__col footer__col--menu" aria-labelledby="footer-menu">
+      <h2 class="footer__title" id="footer-menu">{t(locale, 'footer.menu')}</h2>
       <ul>
         {NAV_ORDER.map((key) => <li><a href={routes[locale][key]}>{t(locale, `nav.${key}`)}</a></li>)}
       </ul>
     </nav>
+
+    <div class="footer__col footer__col--zones">
+      <h2 class="footer__title">{t(locale, 'footer.presence')}</h2>
+      <ul>
+        {SITE.areasServed.map((place) => <li>{place}</li>)}
+      </ul>
+    </div>
+
+    <div class="footer__col footer__col--contact">
+      <h2 class="footer__title">{t(locale, 'footer.contact')}</h2>
+      <ul class="footer__contact">
+        <li>
+          <a href={`mailto:${SITE.email}`}>
+            <ContactIcon name="mail" />
+            <span class="visually-hidden">Email :</span>
+            {SITE.email}
+          </a>
+        </li>
+        <li>
+          <a href={`tel:${tel}`}>
+            <ContactIcon name="phone" />
+            <span class="visually-hidden">Téléphone :</span>
+            {SITE.phone}
+          </a>
+        </li>
+        <li>
+          <a href={SITE.instagram} rel="noopener" target="_blank">
+            <ContactIcon name="instagram" />
+            <span class="visually-hidden">Instagram :</span>
+            {SITE.instagramHandle}
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="container footer__legal">
@@ -44,57 +66,66 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
 
 <style>
   .footer {
-    margin-top: clamp(3rem, 2rem + 5vw, 7rem);
+    margin-top: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
     background: var(--plum);
     color: rgb(246 239 229 / 0.78);
-    font-size: 0.9rem;
+    /* Footer : toutes les tailles réduites d'un quart par rapport au reste du site */
+    font-size: calc(var(--fs-text) * 0.75);
   }
+
+  .footer--flush { margin-top: 0; }
 
   .footer__inner {
     display: grid;
     gap: 2.5rem;
-    padding-block: clamp(3rem, 2.5rem + 3vw, 5rem);
+    padding-block: clamp(2.25rem, 2rem + 2vw, 3.5rem);
   }
 
-  @media (min-width: 760px) {
-    .footer__inner { grid-template-columns: 1.4fr 1fr 1fr; }
+  /* 3 colonnes à la largeur de leur contenu, réparties sur toute la largeur */
+  @media (min-width: 1024px) {
+    .footer__inner {
+      grid-template-columns: repeat(3, auto);
+      justify-content: space-between;
+    }
   }
 
-  .footer__name {
-    display: block;
-    font-size: 0.75rem;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--cream);
+  /* Téléphone : pas de colonne Menu (déjà dans le header), et le contact avant les villes */
+  @media (max-width: 759px) {
+    .footer__col--menu { display: none; }
+    .footer__col--contact { order: 1; }
+    .footer__col--zones { order: 2; }
   }
-
-  .footer__sub {
-    display: block;
-    margin-top: 0.4rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.55em;
-    text-transform: uppercase;
-    color: var(--sage);
-  }
-
-  .footer__zones { margin-top: 1.5rem; }
 
   .footer__title {
     font-family: var(--font-title);
-    font-size: 1.5rem;
+    font-size: calc(var(--fs-subtitle) * 0.75);
     font-style: italic;
     color: var(--peach);
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
   }
 
-  .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
   .footer a { text-decoration: none; }
   .footer a:hover { color: var(--peach); }
+
+  .footer__contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .footer__contact :global(.contact-icon) {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--peach);
+  }
 
   .footer__legal {
     padding-block: 1.5rem 2rem;
     border-top: 1px solid rgb(246 239 229 / 0.1);
-    font-size: 0.75rem;
+    font-size: calc(var(--fs-label) * 0.75);
     color: rgb(246 239 229 / 0.5);
   }
 </style>

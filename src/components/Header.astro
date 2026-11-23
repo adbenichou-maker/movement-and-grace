@@ -1,49 +1,323 @@
 ---
-import { routes, type Locale } from '../i18n/ui';
+// Header fixe (ordinateur et mobile) : logo + nom au centre, icône menu à droite.
+// Le menu glisse depuis la droite, sous le header.
+// - Ordinateur : survoler l'icône ouvre le menu ; il reste ouvert tant que la souris est dessus.
+//   Cliquer sur l'icône « épingle » le menu : il reste ouvert même quand la souris s'en va.
+// - Téléphone : l'icône ouvre / ferme le menu au toucher.
+import { SITE } from '../config/site';
+import { NAV_ORDER, routes, t, type Locale, type PageKey } from '../i18n/ui';
+import { withBase } from '../lib/url';
 
 interface Props {
   locale: Locale;
+  current?: PageKey;
 }
 
-const { locale } = Astro.props;
+const { locale, current } = Astro.props;
 ---
 
-<header class="header">
-  <a class="wordmark" href={routes[locale].home} aria-label="Movement & Grace — Well-being">
-    <span class="wordmark__name">Movement &amp; Grace</span>
-    <span class="wordmark__sub">Well-being</span>
-  </a>
-</header>
+<div class="site-nav" data-sidenav>
+  <header class="topbar">
+    <a class="logo__mark-link" href={routes[locale].home} aria-label={`${SITE.name} — ${t(locale, 'nav.home')}`}>
+      <img
+        class="logo__mark"
+        src={withBase('/images/logo-mg.png')}
+        alt=""
+        width="381"
+        height="217"
+        decoding="async"
+      />
+    </a>
+
+    <a class="logo__name" href={routes[locale].home} tabindex="-1">{SITE.name}</a>
+
+    <button
+      class="topbar__toggle"
+      type="button"
+      aria-controls="sidenav-panel"
+      aria-expanded="false"
+      data-sidenav-toggle
+    >
+      <span class="visually-hidden" data-label-open>{t(locale, 'nav.open')}</span>
+      <span class="toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+  </header>
+
+  <nav
+    id="sidenav-panel"
+    class="panel"
+    aria-label={t(locale, 'nav.label')}
+    data-sidenav-panel
+    inert
+  >
+    <ul class="panel__list">
+      {
+        NAV_ORDER.map((key, i) => (
+          <li style={`--i:${i}`}>
+            <a href={routes[locale][key]} aria-current={current === key ? 'page' : undefined}>
+              {t(locale, `nav.${key}`)}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
+
+<div class="overlay" data-sidenav-overlay aria-hidden="true"></div>
 
 <style>
-  .header {
-    padding: 1.75rem var(--gutter) 0;
-    /* laisse la place au bouton de menu flottant sur mobile */
-    padding-right: calc(var(--gutter) + 56px);
+  /* ---------- Barre fixe ---------- */
+
+  .topbar {
+    position: fixed;
+    z-index: 60;
+    inset: 0 0 auto 0;
+    height: var(--header-h);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding-inline: var(--gutter);
+    background: rgb(246 239 229 / 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgb(185 119 92 / 0.14);
   }
 
-  @media (min-width: 900px) {
-    .header { padding-right: var(--gutter); }
+  .logo__mark-link {
+    justify-self: start;
+    display: inline-flex;
   }
 
-  .wordmark {
-    display: inline-grid;
-    gap: 0.35rem;
+  .logo__mark {
+    width: auto;
+    height: calc(var(--header-h) * 0.55);
+  }
+
+  .logo__name {
+    font-family: var(--font-title);
+    font-size: clamp(1.5rem, 1.25rem + 0.75vw, 1.875rem);
+    line-height: 1;
+    white-space: nowrap;
     text-decoration: none;
     color: var(--plum);
   }
 
-  .wordmark__name {
-    font-size: clamp(0.68rem, 0.62rem + 0.25vw, 0.8rem);
-    font-weight: 400;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
+  .logo__name:hover { color: var(--plum); }
+
+  .topbar__toggle {
+    justify-self: end;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--plum);
+    cursor: pointer;
+    transition: background-color 600ms var(--ease);
   }
 
-  .wordmark__sub {
-    font-size: 0.6rem;
-    letter-spacing: 0.55em;
-    text-transform: uppercase;
-    color: var(--sage);
+  .topbar__toggle:hover { background: var(--peach); }
+
+  .toggle__icon {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 11px;
+  }
+
+  .toggle__icon span {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transition: transform 600ms var(--ease), opacity 400ms var(--ease), width 600ms var(--ease), top 600ms var(--ease);
+  }
+
+  .toggle__icon span:nth-child(1) { top: 0; }
+  .toggle__icon span:nth-child(2) { top: 5px; width: 70%; }
+  .toggle__icon span:nth-child(3) { top: 10px; }
+
+  .topbar__toggle:hover .toggle__icon span:nth-child(2) { width: 100%; }
+
+  /* L'icône devient une croix quand le menu est ouvert */
+  .site-nav.is-open .toggle__icon span:nth-child(1) { top: 5px; transform: rotate(45deg); }
+  .site-nav.is-open .toggle__icon span:nth-child(2) { opacity: 0; }
+  .site-nav.is-open .toggle__icon span:nth-child(3) { top: 5px; transform: rotate(-45deg); }
+
+  @media (max-width: 560px) {
+    .topbar { grid-template-columns: 56px 1fr 56px; padding-inline: 1rem; }
+    /* Téléphone : logo et nom réduits d'1/4 */
+    .logo__name { justify-self: center; font-size: 1.125rem; }
+    .logo__mark { height: calc(var(--header-h) * 0.31); }
+    .topbar__toggle { width: 44px; height: 44px; }
+  }
+
+  /* ---------- Panneau ---------- */
+
+  .panel {
+    position: fixed;
+    z-index: 50;
+    top: var(--header-h);
+    right: 0;
+    bottom: 0;
+    width: min(440px, 88vw);
+    display: flex;
+    flex-direction: column;
+    padding: clamp(2rem, 6vh, 4rem) clamp(1.75rem, 5vw, 3.25rem) clamp(1.5rem, 4vh, 2.5rem);
+    background:
+      radial-gradient(70% 45% at 100% 0%, rgb(229 182 160 / 0.22), transparent 70%),
+      radial-gradient(60% 40% at 0% 100%, rgb(200 137 139 / 0.16), transparent 70%),
+      var(--plum);
+    color: var(--cream);
+    overflow-y: auto;
+    transform: translate3d(100%, 0, 0);
+    visibility: hidden;
+    transition: transform var(--slow) var(--ease), visibility 0s linear var(--slow);
+  }
+
+  .site-nav.is-open .panel {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--slow) var(--ease), visibility 0s;
+    box-shadow: -30px 0 80px rgb(43 32 39 / 0.25);
+  }
+
+  .panel__list {
+    list-style: none;
+    margin: 0 0 auto;
+    padding: 0;
+    display: grid;
+    gap: clamp(0.6rem, 2vh, 1.2rem);
+  }
+
+  .panel__list li {
+    opacity: 0;
+    transform: translate3d(24px, 0, 0);
+    transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+  }
+
+  .site-nav.is-open .panel__list li {
+    opacity: 1;
+    transform: none;
+    transition-duration: 900ms;
+    transition-delay: calc(200ms + var(--i) * 80ms);
+  }
+
+  .panel__list a {
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-title);
+    font-size: var(--fs-subtitle);
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--cream);
+  }
+
+  .panel__list a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0.05em;
+    width: 100%;
+    height: 1px;
+    background: var(--peach);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease);
+  }
+
+  .panel__list a:hover { color: var(--peach); }
+  .panel__list a:hover::after,
+  .panel__list a[aria-current='page']::after { transform: scaleX(1); }
+  .panel__list a[aria-current='page'] { font-style: italic; color: var(--peach); }
+
+  /* ---------- Voile sur la page ---------- */
+
+  .overlay {
+    position: fixed;
+    z-index: 45;
+    inset: var(--header-h) 0 0 0;
+    background: rgb(43 32 39 / 0.22);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--slow) var(--ease);
+  }
+
+  .overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 </style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-sidenav]');
+  const toggle = root?.querySelector<HTMLButtonElement>('[data-sidenav-toggle]');
+  const panel = root?.querySelector<HTMLElement>('[data-sidenav-panel]');
+  const overlay = document.querySelector<HTMLElement>('[data-sidenav-overlay]');
+
+  if (root && toggle && panel && overlay) {
+    // Le survol n'existe que sur les appareils avec une vraie souris.
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    let closeTimer: number | undefined;
+    let pinned = false; // ouvert par un clic : reste ouvert même sans survol
+
+    const isOpen = () => root.classList.contains('is-open');
+
+    const open = () => {
+      window.clearTimeout(closeTimer);
+      if (isOpen()) return;
+      root.classList.add('is-open');
+      overlay.classList.add('is-visible');
+      panel.inert = false;
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+
+    const close = (opts: { returnFocus?: boolean } = {}) => {
+      window.clearTimeout(closeTimer);
+      pinned = false;
+      if (!isOpen()) return;
+      root.classList.remove('is-open');
+      overlay.classList.remove('is-visible');
+      panel.inert = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      if (opts.returnFocus) toggle.focus({ preventScroll: true });
+    };
+
+    // Survol de l'icône : ouverture temporaire.
+    toggle.addEventListener('mouseenter', () => {
+      if (canHover.matches) open();
+    });
+
+    // La souris quitte l'icône et le menu : fermeture douce, sauf si le menu est épinglé.
+    root.addEventListener('mouseleave', () => {
+      if (!canHover.matches || pinned || !isOpen()) return;
+      closeTimer = window.setTimeout(() => close(), 400);
+    });
+    root.addEventListener('mouseenter', () => window.clearTimeout(closeTimer));
+
+    // Clic : épingle le menu (ou le referme s'il était déjà épinglé).
+    toggle.addEventListener('click', (event) => {
+      if (isOpen() && pinned) {
+        close();
+        return;
+      }
+      pinned = true;
+      open();
+      // Activé au clavier (event.detail === 0) : on place le focus dans le menu.
+      if (event.detail === 0) panel.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+    });
+
+    overlay.addEventListener('click', () => close());
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isOpen()) close({ returnFocus: true });
+    });
+  }
+</script>

@@ -1,79 +1,120 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactIcon from '../components/ContactIcon.astro';
 import { SITE } from '../config/site';
+import { withBase } from '../lib/url';
 
 const tel = SITE.phone.replace(/[^+\d]/g, '');
+const place = `${SITE.address.city}, Belgique`;
+
+// Une ligne par moyen de contact : icône cliquable + valeur, comme dans le footer.
+const ways = [
+  { icon: 'mail', label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
+  { icon: 'phone', label: 'Téléphone', value: SITE.phone, href: `tel:${tel}` },
+  { icon: 'instagram', label: 'Instagram', value: SITE.instagramHandle, href: SITE.instagram, external: true },
+  {
+    icon: 'pin',
+    label: 'Adresse',
+    value: place,
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`,
+    external: true,
+  },
+] as const;
 ---
 
 <BaseLayout
   page="contact"
+  hideFooter
   title="Contact · Movement & Grace, yoga et team building à Mons"
   description="Contactez Mathilde Goutorbe pour un cours de yoga, un atelier, un séminaire ou un team building bien-être à Mons, en Wallonie, à Bruxelles ou à Paris."
 >
   <section class="page-intro container">
     <span class="eyebrow" data-reveal>Contact</span>
-    <h1 data-reveal style="--reveal-delay: 100ms">Échangeons, <em>tout simplement</em></h1>
-    <p class="lead" data-reveal style="--reveal-delay: 200ms">
+    <h1 class="one-line" data-reveal style="--reveal-delay: 100ms">Échangeons, <em>tout simplement</em></h1>
+    <p class="lead full-width" data-reveal style="--reveal-delay: 200ms">
       Un projet d’atelier pour votre équipe, un cours, une question ? Écrivez-moi : je réponds
       personnellement, en français ou en anglais.
     </p>
   </section>
 
   <section class="section section--tight container">
-    <div class="grid grid--2">
-      <a class="card contact-card" href={`mailto:${SITE.email}`} data-reveal>
-        <span class="eyebrow">Email</span>
-        <span class="contact-card__value">{SITE.email}</span>
-      </a>
-      <a class="card contact-card" href={`tel:${tel}`} data-reveal style="--reveal-delay: 100ms">
-        <span class="eyebrow">Téléphone</span>
-        <span class="contact-card__value">{SITE.phone}</span>
-      </a>
-      <a class="card contact-card" href={SITE.instagram} rel="noopener" target="_blank" data-reveal style="--reveal-delay: 200ms">
-        <span class="eyebrow">Instagram</span>
-        <span class="contact-card__value">{SITE.instagramHandle}</span>
-      </a>
-      <div class="card contact-card" data-reveal style="--reveal-delay: 300ms">
-        <span class="eyebrow">Basée à</span>
-        <span class="contact-card__value">{SITE.address.city}, Belgique</span>
-        <p>J’interviens en Wallonie, à Bruxelles et à Paris.</p>
-      </div>
-    </div>
+    <ul class="ways" data-reveal>
+      {
+        ways.map((w) => (
+          <li>
+            <a
+              class="way"
+              href={w.href}
+              {...('external' in w && w.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              <ContactIcon name={w.icon} />
+              <span class="visually-hidden">{w.label} :</span>
+              <span>{w.value}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
-    <div class="card card--plum booking" data-reveal>
-      <h2>Entreprises</h2>
-      <p>Réservez un premier échange de 15 minutes pour parler de votre équipe et de vos envies.</p>
-      <a class="btn btn--peach" href={SITE.bookingUrl}>
-        Réserver un échange de 15 minutes <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
+  <!-- Logo en grand, centré en bas de page (fond clair, sans alternance) -->
+  <section class="section contact-logo container" aria-hidden="true">
+    <img
+      src={withBase('/images/logo-mg.png')}
+      alt=""
+      width="381"
+      height="217"
+      decoding="async"
+      data-reveal
+      style="--reveal-delay: 400ms"
+    />
   </section>
 </BaseLayout>
 
 <style>
-  .contact-card {
-    display: block;
+  /* Dernière section de la page : elle occupe l'espace restant et pose le logo en bas, centré */
+  .contact-logo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    /* marges qui suivent la hauteur d'écran : le logo reste visible sans défiler */
+    padding-block: clamp(0.75rem, 3vh, 2.5rem);
+  }
+  .contact-logo img {
+    width: min(128px, 23.25vw);
+    height: auto;
+  }
+
+  /* Écrans bas (petits téléphones) : logo un peu plus petit pour rester visible sans défiler */
+  @media (max-height: 700px) {
+    .contact-logo img { width: min(128px, 23.25vw, 10vh); }
+  }
+
+  .ways {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(0.6rem, 1.6vh, 1.1rem);
+  }
+
+  .way {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--plum);
     text-decoration: none;
-    transition: transform 700ms var(--ease), background-color 700ms var(--ease);
-  }
-  a.contact-card:hover {
-    transform: translateY(-3px);
-    background: rgb(255 255 255 / 0.75);
-    color: inherit;
-  }
-  .contact-card .eyebrow { margin-bottom: 0.6rem; }
-  .contact-card__value {
-    display: block;
-    font-family: var(--font-title);
-    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
-    line-height: 1.3;
     overflow-wrap: anywhere;
   }
-  .contact-card p { margin: 0.6rem 0 0; color: var(--text-soft); }
 
-  .booking {
-    margin-top: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
-    text-align: center;
+  .way :global(.contact-icon) {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    color: var(--peach-deep);
+    transition: transform 500ms var(--ease);
   }
-  .booking p { max-width: 32rem; margin: 0 auto 2rem; }
+
+  .way:hover { color: var(--peach-deep); }
+  .way:hover :global(.contact-icon) { transform: scale(1.1); }
 </style>

@@ -1,0 +1,43 @@
+---
+// Icônes de contact au trait fin, partagées entre le footer et la page Contact.
+// La couleur et la taille se règlent avec CSS (stroke / width / height) chez le parent.
+interface Props {
+  name: 'mail' | 'phone' | 'instagram' | 'pin';
+}
+
+const { name } = Astro.props;
+---
+
+<svg
+  class="contact-icon"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.3"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {name === 'mail' && (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+    </>
+  )}
+  {name === 'phone' && (
+    <path d="M5 4h3.5l1.5 4.5-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z" />
+  )}
+  {name === 'instagram' && (
+    <>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" />
+    </>
+  )}
+  {name === 'pin' && (
+    <>
+      <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+      <circle cx="12" cy="10" r="2.3" />
+    </>
+  )}
+</svg>

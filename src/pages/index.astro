@@ -5,28 +5,28 @@ import { routes } from '../i18n/ui';
 
 <BaseLayout
   page="home"
+  footerFlush
   title="Movement & Grace · Yoga, séminaires et team building bien-être"
   description="Yoga et ateliers bien-être pour les entreprises et les particuliers : séminaires, team building et cours individuels à Mons, en Wallonie, à Bruxelles et à Paris."
 >
   <section class="hero container">
-    <div class="hero__inner">
+    <div class="hero__text">
       <span class="eyebrow" data-reveal>Yoga · Ateliers · Événements</span>
 
       <h1 data-reveal style="--reveal-delay: 120ms">
         Se sentir bien,<br /><em>et mieux travailler ensemble.</em>
       </h1>
 
-      <hr class="divider center" data-reveal style="--reveal-delay: 240ms" />
+      <hr class="divider" data-reveal style="--reveal-delay: 240ms" />
 
       <!-- TODO : remplacer par le texte de présentation définitif. -->
-      <div class="hero__text" data-reveal style="--reveal-delay: 320ms">
-        <span class="placeholder-note">Texte provisoire</span>
-        <p class="lead center">
+      <div data-reveal style="--reveal-delay: 320ms">
+        <p class="lead">
           Je m'appelle Mathilde. J'accompagne les équipes et les personnes qui souhaitent ralentir,
           retrouver leur corps et mieux s'écouter. Entre le yoga, la parole et le mouvement, je crée
           des moments simples et doux pour se reconnecter à soi et aux autres.
         </p>
-        <p class="lead center">
+        <p class="lead">
           En entreprise, à Mons, à Bruxelles ou à Paris, en petit groupe ou en individuel :
           chacun avance à son rythme, dans un cadre sûr et bienveillant.
         </p>
@@ -41,42 +41,118 @@ import { routes } from '../i18n/ui';
         </a>
       </div>
     </div>
+
+    <!--
+      TODO : photo de yoga (verticale, lumière naturelle). Remplacer le <div> par :
+      <img src={withBase('/images/accueil.jpg')} alt="Description de la photo" width="800" height="1100" />
+      (ou <Video src="…" ambient title="…" /> pour une vidéo d'ambiance).
+    -->
+    <div class="hero__media arch" data-reveal style="--reveal-delay: 300ms">
+      <div class="arch__placeholder" aria-hidden="true">Photo à venir</div>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    min-height: calc(100svh - 6rem);
+    min-height: calc(100svh - var(--header-h));
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 5rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 1.5rem + 4vh, 5rem);
+  }
+
+  .hero h1 { margin-bottom: 0; }
+
+  .hero .eyebrow { margin-bottom: 1rem; }
+  .hero .divider { margin-block: 1.75rem; }
+  .hero__actions { margin-top: 2.25rem; gap: 0.75rem; }
+
+  /* Boutons un peu plus compacts pour tenir côte à côte */
+  .hero__actions .btn {
+    padding-inline: 1.6rem;
+    letter-spacing: 0.16em;
+  }
+
+  @media (min-width: 900px) {
+    .hero__actions .btn { white-space: nowrap; }
+  }
+
+  /* Image en arche, comme une fenêtre ouverte */
+  .arch {
+    position: relative;
+    width: 100%;
+    max-width: 22rem;
+    aspect-ratio: 7 / 10;
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: 999px 999px 14px 14px;
+    box-shadow: 0 30px 60px -30px rgb(43 32 39 / 0.35);
+  }
+
+  .arch :global(img),
+  .arch :global(video),
+  .arch__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .arch__placeholder {
     display: grid;
     place-items: center;
-    padding-block: clamp(2rem, 1rem + 4vh, 5rem);
-    text-align: center;
+    background:
+      radial-gradient(60% 45% at 35% 30%, rgb(229 182 160 / 0.75), transparent 70%),
+      radial-gradient(55% 50% at 70% 75%, rgb(200 137 139 / 0.5), transparent 70%),
+      radial-gradient(40% 35% at 25% 85%, rgb(143 174 150 / 0.35), transparent 70%),
+      var(--cream-deep);
+    color: var(--plum-muted);
+    font-size: var(--fs-label);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
   }
 
-  .hero__inner {
-    max-width: 50rem;
+  /* Ordinateur : texte à gauche, arche à droite.
+     Tout tient dans la hauteur de l'écran : les tailles suivent la hauteur (vh),
+     et faire défiler ne révèle que le pied de page. */
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      height: calc(100svh - var(--header-h));
+      min-height: 30rem;
+      padding-block: clamp(1rem, 3.5vh, 2.5rem);
+      gap: clamp(2rem, 1rem + 3vw, 4rem);
+    }
+
+    .hero .eyebrow { margin-bottom: clamp(0.5rem, 1.5vh, 1rem); }
+    .hero .divider { margin-block: clamp(0.9rem, 2.5vh, 1.6rem); }
+
+    /* Même taille de texte que les autres pages (classe .lead globale) */
+    .hero__text .lead {
+      max-width: none;
+      line-height: 1.65;
+      margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+    }
+
+    .hero__actions { margin-top: clamp(1rem, 3vh, 2rem); }
+
+    .arch {
+      /* largeur limitée par la colonne ET par la hauteur de l'écran (proportions 7:10 conservées) */
+      width: min(100%, 27rem, calc((100svh - var(--header-h) - 5rem) * 0.7));
+      max-width: none;
+      margin-inline: auto 0;
+    }
   }
 
-  .hero h1 {
-    font-size: clamp(2.4rem, 1.7rem + 3vw, 4.2rem);
-    margin-bottom: 0;
-  }
-
-  .hero .divider {
-    margin-block: 1.75rem;
-  }
-
-  .hero .eyebrow {
-    margin-bottom: 1rem;
-  }
-
-  .hero__text .lead {
-    margin-inline: auto;
-  }
-
-  .hero__actions {
-    justify-content: center;
-    margin-top: 2.75rem;
+  /* Mobile / tablette : texte centré, arche en dessous */
+  @media (max-width: 899px) {
+    .hero__text { text-align: center; }
+    .hero__text .lead { margin-inline: auto; }
+    .hero .divider { margin-inline: auto; }
+    .hero__actions { justify-content: center; }
+    .arch { max-width: 17rem; }
   }
 
   @media (max-width: 520px) {

@@ -7,7 +7,6 @@ import { withBase } from '../lib/url';
 
 export const SITE = {
   name: 'Movement & Grace',
-  tagline: 'Well-being',
   founder: 'Mathilde Goutorbe',
 
   // TODO : coordonnées réelles.

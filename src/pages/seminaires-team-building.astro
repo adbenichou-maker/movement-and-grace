@@ -5,19 +5,6 @@ import CtaBand from '../components/CtaBand.astro';
 import { SITE } from '../config/site';
 import { absoluteUrl } from '../lib/url';
 
-const programme = [
-  'Mieux se parler',
-  'Mieux s’entendre avec son chef',
-  'Mieux s’organiser en équipe',
-  'Traverser les changements de la vie',
-];
-
-// TODO : remplacer par de vrais avis clients (prénom, fonction, entreprise).
-const avis = [
-  { text: 'Avis client à venir.', author: 'Prénom N., fonction — entreprise' },
-  { text: 'Avis client à venir.', author: 'Prénom N., fonction — entreprise' },
-];
-
 const service = {
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -37,94 +24,11 @@ const service = {
 >
   <section class="page-intro container">
     <span class="eyebrow" data-reveal>Pour les entreprises</span>
-    <h1 data-reveal style="--reveal-delay: 100ms">Séminaire &amp; <em>Team Building</em></h1>
-    <p class="lead" data-reveal style="--reveal-delay: 200ms">
+    <h1 class="one-line" data-reveal style="--reveal-delay: 100ms">Séminaire &amp; <em>Team Building</em></h1>
+    <p class="lead full-width" data-reveal style="--reveal-delay: 200ms">
       Du yoga et des outils simples pour mieux se parler, mieux s’écouter et mieux travailler
       ensemble. J’interviens dans vos locaux ou dans un lieu choisi, à Bruxelles, en Wallonie et à Paris.
     </p>
-    <div class="actions" data-reveal style="--reveal-delay: 300ms">
-      <a class="btn btn--peach" href={SITE.bookingUrl}>
-        Réserver un échange de 15 minutes <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- Les ateliers -->
-  <section class="section container" aria-labelledby="ateliers">
-    <div class="split">
-      <div class="sticky" data-reveal>
-        <span class="eyebrow">Les ateliers</span>
-        <h2 id="ateliers">Mieux travailler <em>ensemble</em></h2>
-        <p class="lead">Du yoga et des outils pour mieux se parler et avancer en équipe.</p>
-      </div>
-
-      <div class="card" data-reveal style="--reveal-delay: 150ms">
-        <span class="eyebrow">Le grand programme</span>
-        <h3>« Je m’écoute et j’écoute l’autre »</h3>
-        <ul class="list">
-          {programme.map((item) => <li>{item}</li>)}
-        </ul>
-        <p>
-          Chaque séance mêle mouvement, respiration et temps d’échange. Le format s’adapte à votre
-          équipe : une matinée, une journée, ou un cycle sur plusieurs semaines.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Les événements -->
-  <section class="section container" aria-labelledby="evenements">
-    <div class="split split--reverse">
-      <div class="photo-placeholder" data-reveal aria-hidden="true">Photo à venir</div>
-
-      <div data-reveal style="--reveal-delay: 150ms">
-        <span class="eyebrow">Les événements</span>
-        <h2 id="evenements">Un moment bien-être, <em>organisé du début à la fin</em></h2>
-        <div class="prose">
-          <p>
-            Séminaires, team buildings, réunions d’équipe : j’organise tout, du programme au lieu,
-            pour que vous n’ayez qu’à vivre le moment.
-          </p>
-          <p>
-            Une pause pour respirer au cœur d’une journée chargée, une transition en douceur après
-            une période intense, ou un temps pour se retrouver autrement.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Les avis -->
-  <section class="section container" aria-labelledby="avis">
-    <div class="section-head center" data-reveal>
-      <span class="eyebrow">Ils m’ont fait confiance</span>
-      <h2 id="avis">Les avis</h2>
-    </div>
-    <div class="grid grid--2">
-      {
-        avis.map((a, i) => (
-          <figure class="card avis" data-reveal style={`--reveal-delay: ${i * 120}ms`}>
-            <span class="placeholder-note">À remplacer</span>
-            <blockquote>
-              <p>{a.text}</p>
-            </blockquote>
-            <figcaption>{a.author}</figcaption>
-          </figure>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- Zones : important pour être trouvé sur Google -->
-  <section class="section section--tight container" aria-labelledby="zones">
-    <div class="prose center" data-reveal>
-      <h2 id="zones" class="h3">Où j’interviens</h2>
-      <p>
-        Basée à Mons, j’accompagne les entreprises dans toute la <strong>Wallonie</strong> (Mons,
-        Charleroi, Namur, Liège, Tournai), à <strong>Bruxelles</strong> et à <strong>Paris</strong>.
-        Séminaires, team buildings et ateliers en français ou en anglais.
-      </p>
-    </div>
   </section>
 
   <CtaBand
@@ -134,25 +38,3 @@ const service = {
     label="Réserver un échange de 15 minutes"
   />
 </BaseLayout>
-
-<style>
-  .h3 { font-size: clamp(1.45rem, 1.25rem + 0.9vw, 1.9rem); }
-
-  .avis { margin: 0; }
-  .avis blockquote { margin: 0 0 1.25rem; }
-  .avis blockquote p {
-    font-family: var(--font-title);
-    font-style: italic;
-    font-size: 1.45rem;
-    line-height: 1.4;
-    color: var(--plum);
-  }
-  .avis figcaption {
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-soft);
-  }
-
-  .page-intro .actions { margin-top: 2.25rem; }
-</style>

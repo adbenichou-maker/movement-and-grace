@@ -5,12 +5,14 @@ interface Props {
   text?: string;
   href: string;
   label: string;
+  /** Un peu plus d'espace au-dessus du bandeau. */
+  spaced?: boolean;
 }
 
-const { title, text, href, label } = Astro.props;
+const { title, text, href, label, spaced = false } = Astro.props;
 ---
 
-<section class="section section--tight">
+<section class:list={['section section--tight section--cta', { 'section--spaced-top': spaced }]}>
   <div class="container">
     <div class="cta card card--plum" data-reveal>
       <h2 set:html={title} />
@@ -25,11 +27,11 @@ const { title, text, href, label } = Astro.props;
 <style>
   .cta {
     text-align: center;
-    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+    padding-block: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
   }
   .cta p {
     max-width: 34rem;
-    margin: 0 auto 2.25rem;
+    margin: 0 auto 1.5rem;
   }
   .cta :global(h2 em) { color: var(--cream); }
 </style>

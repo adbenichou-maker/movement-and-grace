@@ -6,7 +6,6 @@ import '@fontsource-variable/montserrat/wght.css';
 import '../styles/global.css';
 
 import Header from '../components/Header.astro';
-import SideNav from '../components/SideNav.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../config/site';
 import { LIVE_LOCALES, routes, type Locale, type PageKey } from '../i18n/ui';
@@ -24,9 +23,13 @@ interface Props {
   /** Données structurées spécifiques à la page (en plus de celles du site). */
   jsonLd?: Record<string, unknown>;
   noindex?: boolean;
+  /** Pied de page collé au contenu (accueil). */
+  footerFlush?: boolean;
+  /** Pas de pied de page (page Contact : il ferait doublon). */
+  hideFooter?: boolean;
 }
 
-const { title, description, locale = 'fr', page, ogImage, jsonLd, noindex = false } = Astro.props;
+const { title, description, locale = 'fr', page, ogImage, jsonLd, noindex = false, footerFlush = false, hideFooter = false } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const homeUrl = absoluteUrl('/');
@@ -102,13 +105,12 @@ const business = {
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
     <div class="page">
-      <Header locale={locale} />
+      <Header locale={locale} current={page} />
       <main id="contenu">
         <slot />
       </main>
-      <Footer locale={locale} />
+      {!hideFooter && <Footer locale={locale} flush={footerFlush} />}
     </div>
-    <SideNav locale={locale} current={page} />
 
     <script>
       // Apparition lente des blocs marqués data-reveal quand ils entrent à l'écran.
